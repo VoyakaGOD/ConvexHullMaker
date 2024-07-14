@@ -5,10 +5,10 @@
 #include <QPushButton>
 #include <QBoxLayout>
 #include <QCheckBox>
-#include <QLabel>
 #include <QFileDialog>
 #include "convexhullbuilder.h"
 #include "fileutils.h"
+#include "onelinelog.h"
 
 class MainWindow : public QWidget
 {
@@ -17,7 +17,7 @@ class MainWindow : public QWidget
 private:
     QString savePath;
     QLineEdit *pathEditor;
-    QLabel *log;
+    OneLineLog *log;
     QCheckBox *rewriteOptionCheckBox;
     ConvexHullBuilder *builder;
     PointsAndHullStyle style;

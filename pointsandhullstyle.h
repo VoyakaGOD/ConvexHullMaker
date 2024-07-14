@@ -5,7 +5,7 @@
 
 struct PointsAndHullStyle
 {
-    int pointSize = 4;
+    int pointSize = 5;
     QColor pointColor = Qt::red;
     int pointStrokeWidth = 1;
     QColor pointStrokeColor = Qt::black;

@@ -15,7 +15,7 @@ MainWindow::MainWindow(QString initialSavePath, const PointsAndHullStyle &style)
     connect(saveButton, &QPushButton::clicked, this, &MainWindow::onSaveRequested);
     QPushButton *clearButton = new QPushButton("clear(X)");
     connect(clearButton, &QPushButton::clicked, this, &MainWindow::onClearingRequested);
-    log = new QLabel("Thanks for using!!!");
+    log = new OneLineLog();
     log->setSizePolicy(QSizePolicy::Expanding, log->sizePolicy().verticalPolicy());
     rewriteOptionCheckBox = new QCheckBox("rewrite");
     QHBoxLayout *infoLayout = new QHBoxLayout();
@@ -36,7 +36,10 @@ void MainWindow::onFileDialogRequested()
 {
     QString newPath = QFileDialog::getSaveFileName(this, "select save directory", QFileInfo(savePath).absoluteDir().path());
     if(newPath.isNull())
+    {
+        log->setMessage("File dialog was canceled!");
         return;
+    }
 
     savePath = newPath;
     pathEditor->setText(savePath);
@@ -49,12 +52,13 @@ void MainWindow::onSaveRequested()
         path = FileUtils::getVacantName(path);
 
     if(!FileUtils::createSVG(builder->getPoints(), builder->getPoints(), path, style))
-        log->setText("Can't save file with name [" + path +"]!");
+        log->setMessage("Can't save file with name [" + path +"]!");
     else
-        log->setText("file saved with name [" + path + "]");
+        log->setMessage("File saved with name [" + path + "]");
 }
 
 void MainWindow::onClearingRequested()
 {
+    log->setMessage("All[" + QString::number(builder->getPoints().size()) +"] points removed!");
     builder->clear();
 }
