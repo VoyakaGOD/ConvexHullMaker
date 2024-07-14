@@ -13,7 +13,7 @@ class FileUtils
 public:
     FileUtils() = delete;
 
-    static void createSVG(const QList<QPoint> &points, const QList<QPoint> &hull, QString save_path, const PointsAndHullStyle &style);
+    static bool createSVG(const QList<QPoint> &points, const QList<QPoint> &hull, QString savePath, const PointsAndHullStyle &style);
     static QString getVacantName(QString name);
 };
 

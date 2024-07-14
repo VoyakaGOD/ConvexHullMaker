@@ -21,7 +21,7 @@ private:
 
 public:
     ConvexHullBuilder(const PointsAndHullStyle &style);
-    const QList<QPoint> &getPoint();
+    const QList<QPoint> &getPoints();
     const QList<QPoint> &getHull();
 
 protected:

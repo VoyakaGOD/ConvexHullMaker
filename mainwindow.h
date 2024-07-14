@@ -6,7 +6,9 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QLabel>
+#include <QFileDialog>
 #include "convexhullbuilder.h"
+#include "fileutils.h"
 
 class MainWindow : public QWidget
 {
@@ -18,9 +20,10 @@ private:
     QLabel *log;
     QCheckBox *rewriteOptionCheckBox;
     ConvexHullBuilder *builder;
+    PointsAndHullStyle style;
 
 public:
-    MainWindow(QString initialSavePath);
+    MainWindow(QString initialSavePath, const PointsAndHullStyle &style = PointsAndHullStyle());
 
 private slots:
     void onFileDialogRequested();

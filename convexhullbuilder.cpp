@@ -7,7 +7,7 @@ ConvexHullBuilder::ConvexHullBuilder(const PointsAndHullStyle &style) : style(st
     setLineWidth(2);
 }
 
-const QList<QPoint> &ConvexHullBuilder::getPoint()
+const QList<QPoint> &ConvexHullBuilder::getPoints()
 {
     return points;
 }

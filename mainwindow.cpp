@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 
-MainWindow::MainWindow(QString initialSavePath)
+MainWindow::MainWindow(QString initialSavePath, const PointsAndHullStyle &style) : savePath(initialSavePath), style(style)
 {
     savePath = initialSavePath;
 
@@ -21,7 +21,7 @@ MainWindow::MainWindow(QString initialSavePath)
     infoLayout->addWidget(rewriteOptionCheckBox);
     infoLayout->addWidget(saveButton);
 
-    builder = new ConvexHullBuilder(PointsAndHullStyle());
+    builder = new ConvexHullBuilder(style);
     builder->setMinimumSize(700, 500);
     auto verticalLayout = new QVBoxLayout(this);
     verticalLayout->addWidget(builder);
@@ -31,10 +31,22 @@ MainWindow::MainWindow(QString initialSavePath)
 
 void MainWindow::onFileDialogRequested()
 {
+    QString newPath = QFileDialog::getSaveFileName(this, "select save directory", QFileInfo(savePath).absoluteDir().path());
+    if(newPath.isNull())
+        return;
 
+    savePath = newPath;
+    pathEditor->setText(savePath);
 }
 
 void MainWindow::onSaveRequested()
 {
+    QString path = savePath;
+    if(rewriteOptionCheckBox->checkState() != Qt::CheckState::Checked)
+        path = FileUtils::getVacantName(path);
 
+    if(!FileUtils::createSVG(builder->getPoints(), builder->getPoints(), path, style))
+        log->setText("Can't save file with name [" + path +"]!");
+    else
+        log->setText("file saved with name [" + path + "]");
 }

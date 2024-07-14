@@ -1,10 +1,13 @@
 #include "fileutils.h"
 
-void FileUtils::createSVG(const QList<QPoint> &points, const QList<QPoint> &hull, QString save_path, const PointsAndHullStyle &style)
+bool FileUtils::createSVG(const QList<QPoint> &points, const QList<QPoint> &hull, QString savePath, const PointsAndHullStyle &style)
 {
-    QFile file(save_path);
+    if(points.empty() || hull.empty())
+        return false;
+
+    QFile file(savePath);
     if(!file.open(QIODevice::WriteOnly))
-        return;
+        return false;
 
     QTextStream out(&file);
     out << "<?xml version=\"1.0\"\n"
@@ -40,6 +43,7 @@ void FileUtils::createSVG(const QList<QPoint> &points, const QList<QPoint> &hull
     out << "</svg>";
 
     file.close();
+    return true;
 }
 
 QString FileUtils::getVacantName(QString name)
@@ -47,7 +51,10 @@ QString FileUtils::getVacantName(QString name)
     if(!QFile::exists(name))
         return name;
 
-    QDir directory(QFileInfo(name).absoluteDir());
+    QFileInfo fileInfo(name);
+    QString extension = fileInfo.suffix();
+    QDir directory = fileInfo.absoluteDir();
+
     directory.setFilter(QDir::Filter::Files);
-    return name + QString::number(directory.count());
+    return name.left(name.lastIndexOf(".")) + QString::number(directory.count()) + "." + extension;
 }
