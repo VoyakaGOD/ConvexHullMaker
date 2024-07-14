@@ -28,6 +28,7 @@ public:
 private slots:
     void onFileDialogRequested();
     void onSaveRequested();
+    void onClearingRequested();
 };
 
 #endif // MAINWINDOW_H

@@ -21,8 +21,9 @@ private:
 
 public:
     ConvexHullBuilder(const PointsAndHullStyle &style);
-    const QList<QPoint> &getPoints();
-    const QList<QPoint> &getHull();
+    const QList<QPoint> &getPoints() const;
+    const QList<QPoint> &getHull() const;
+    void clear();
 
 protected:
     void paintEvent(QPaintEvent *event) override;

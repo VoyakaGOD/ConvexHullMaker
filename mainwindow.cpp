@@ -13,6 +13,8 @@ MainWindow::MainWindow(QString initialSavePath, const PointsAndHullStyle &style)
 
     QPushButton *saveButton = new QPushButton(QString(QChar(0x2193)));
     connect(saveButton, &QPushButton::clicked, this, &MainWindow::onSaveRequested);
+    QPushButton *clearButton = new QPushButton("clear(X)");
+    connect(clearButton, &QPushButton::clicked, this, &MainWindow::onClearingRequested);
     log = new QLabel("Thanks for using!!!");
     log->setSizePolicy(QSizePolicy::Expanding, log->sizePolicy().verticalPolicy());
     rewriteOptionCheckBox = new QCheckBox("rewrite");
@@ -20,6 +22,7 @@ MainWindow::MainWindow(QString initialSavePath, const PointsAndHullStyle &style)
     infoLayout->addWidget(log);
     infoLayout->addWidget(rewriteOptionCheckBox);
     infoLayout->addWidget(saveButton);
+    infoLayout->addWidget(clearButton);
 
     builder = new ConvexHullBuilder(style);
     builder->setMinimumSize(700, 500);
@@ -49,4 +52,9 @@ void MainWindow::onSaveRequested()
         log->setText("Can't save file with name [" + path +"]!");
     else
         log->setText("file saved with name [" + path + "]");
+}
+
+void MainWindow::onClearingRequested()
+{
+    builder->clear();
 }

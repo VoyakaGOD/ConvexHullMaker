@@ -7,19 +7,26 @@ ConvexHullBuilder::ConvexHullBuilder(const PointsAndHullStyle &style) : style(st
     setLineWidth(2);
 }
 
-const QList<QPoint> &ConvexHullBuilder::getPoints()
+const QList<QPoint> &ConvexHullBuilder::getPoints() const
 {
     return points;
 }
 
-const QList<QPoint> &ConvexHullBuilder::getHull()
+const QList<QPoint> &ConvexHullBuilder::getHull() const
 {
     return hull;
 }
 
+void ConvexHullBuilder::clear()
+{
+    points.clear();
+    hull.clear();
+    update();
+}
+
 void ConvexHullBuilder::updateHull()
 {
-
+    update();
 }
 
 void ConvexHullBuilder::paintEvent(QPaintEvent *event)
@@ -36,7 +43,19 @@ void ConvexHullBuilder::paintEvent(QPaintEvent *event)
 
 void ConvexHullBuilder::mousePressEvent(QMouseEvent *event)
 {
-    points.push_back(event->pos());
+    bool already_exists = false;
+    for(int i = 0; i < points.size(); i++)
+    {
+        if(QVector2D(event->pos() - points[i]).lengthSquared() <= style.pointSize*style.pointSize)
+        {
+            points.removeAt(i);
+            already_exists = true;
+            break;
+        }
+    }
+
+    if(!already_exists)
+        points.push_back(event->pos());
+
     updateHull();
-    update();
 }
