@@ -21,15 +21,12 @@ MainWindow::MainWindow(QString initialSavePath)
     infoLayout->addWidget(rewriteOptionCheckBox);
     infoLayout->addWidget(saveButton);
 
-    auto frame = new QFrame();
-    frame->setMinimumSize(700, 500);
-    frame->setFrameShape(QFrame::Shape::Panel);
-    frame->setFrameShadow(QFrame::Shadow::Raised);
-    frame->setLineWidth(3);
-    auto vlayout = new QVBoxLayout(this);
-    vlayout->addWidget(frame);
-    vlayout->addLayout(pathLayout);
-    vlayout->addLayout(infoLayout);
+    builder = new ConvexHullBuilder();
+    builder->setMinimumSize(700, 500);
+    auto verticalLayout = new QVBoxLayout(this);
+    verticalLayout->addWidget(builder);
+    verticalLayout->addLayout(pathLayout);
+    verticalLayout->addLayout(infoLayout);
 }
 
 void MainWindow::onFileDialogRequested()

@@ -6,6 +6,7 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QLabel>
+#include "convexhullbuilder.h"
 
 class MainWindow : public QWidget
 {
@@ -16,6 +17,7 @@ private:
     QLineEdit *pathEditor;
     QLabel *log;
     QCheckBox *rewriteOptionCheckBox;
+    ConvexHullBuilder *builder;
 
 public:
     MainWindow(QString initialSavePath);
