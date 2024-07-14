@@ -15,7 +15,6 @@ class MainWindow : public QWidget
     Q_OBJECT
 
 private:
-    QString savePath;
     QLineEdit *pathEditor;
     OneLineLog *log;
     QCheckBox *rewriteOptionCheckBox;

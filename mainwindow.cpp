@@ -1,12 +1,10 @@
 #include "mainwindow.h"
 
-MainWindow::MainWindow(QString initialSavePath, const PointsAndHullStyle &style) : savePath(initialSavePath), style(style)
+MainWindow::MainWindow(QString initialSavePath, const PointsAndHullStyle &style) : style(style)
 {
-    savePath = initialSavePath;
-
     QPushButton *fileDialogButton = new QPushButton("...");
     connect(fileDialogButton, &QPushButton::clicked, this, &MainWindow::onFileDialogRequested);
-    pathEditor = new QLineEdit(savePath);
+    pathEditor = new QLineEdit(initialSavePath);
     QHBoxLayout *pathLayout = new QHBoxLayout();
     pathLayout->addWidget(pathEditor);
     pathLayout->addWidget(fileDialogButton);
@@ -17,6 +15,7 @@ MainWindow::MainWindow(QString initialSavePath, const PointsAndHullStyle &style)
     connect(clearButton, &QPushButton::clicked, this, &MainWindow::onClearingRequested);
     log = new OneLineLog();
     log->setSizePolicy(QSizePolicy::Expanding, log->sizePolicy().verticalPolicy());
+    log->setWordWrap(true);
     rewriteOptionCheckBox = new QCheckBox("rewrite");
     QHBoxLayout *infoLayout = new QHBoxLayout();
     infoLayout->addWidget(log);
@@ -34,20 +33,19 @@ MainWindow::MainWindow(QString initialSavePath, const PointsAndHullStyle &style)
 
 void MainWindow::onFileDialogRequested()
 {
-    QString newPath = QFileDialog::getSaveFileName(this, "select save directory", QFileInfo(savePath).absoluteDir().path());
+    QString newPath = QFileDialog::getSaveFileName(this, "select save directory", QFileInfo(pathEditor->text()).absoluteDir().path());
     if(newPath.isNull())
     {
         log->setMessage("File dialog was canceled!");
         return;
     }
 
-    savePath = newPath;
-    pathEditor->setText(savePath);
+    pathEditor->setText(newPath);
 }
 
 void MainWindow::onSaveRequested()
 {
-    QString path = savePath;
+    QString path = pathEditor->text();
     if(rewriteOptionCheckBox->checkState() != Qt::CheckState::Checked)
         path = FileUtils::getVacantName(path);
 

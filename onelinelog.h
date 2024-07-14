@@ -2,6 +2,7 @@
 #define ONELINELOG_H
 
 #include <QLabel>
+#include <QResizeEvent>
 
 class OneLineLog : public QLabel
 {
@@ -9,10 +10,15 @@ class OneLineLog : public QLabel
 
 private:
     int msgId;
+    QString msgText;
+    void updateLog();
 
 public:
     OneLineLog();
     void setMessage(QString msg);
+
+protected:
+    void resizeEvent(QResizeEvent* event);
 };
 
 #endif // ONELINELOG_H
