@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <Qlist>
 #include <math.h>
+#include "pointsandhullstyle.h"
 
 class ConvexHullBuilder : public QFrame
 {
@@ -14,11 +15,12 @@ class ConvexHullBuilder : public QFrame
 private:
     QList<QPoint> points;
     QList<QPoint> hull;
+    PointsAndHullStyle style;
 
     void updateHull();
 
 public:
-    ConvexHullBuilder();
+    ConvexHullBuilder(const PointsAndHullStyle &style);
     const QList<QPoint> &getPoint();
     const QList<QPoint> &getHull();
 

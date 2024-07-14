@@ -1,6 +1,6 @@
 #include "convexhullbuilder.h"
 
-ConvexHullBuilder::ConvexHullBuilder()
+ConvexHullBuilder::ConvexHullBuilder(const PointsAndHullStyle &style) : style(style)
 {
     setFrameShape(QFrame::Shape::Panel);
     setFrameShadow(QFrame::Shadow::Raised);
@@ -25,9 +25,11 @@ void ConvexHullBuilder::updateHull()
 void ConvexHullBuilder::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.setBrush(QBrush(Qt::red));
+
+    painter.setBrush(QBrush(style.pointColor));
+    painter.setPen(QPen(QBrush(style.pointStrokeColor), style.pointStrokeWidth));
     for(auto point : points)
-        painter.drawEllipse(point, 5, 5);
+        painter.drawEllipse(point, style.pointSize, style.pointSize);
 
     QFrame::paintEvent(event);
 }

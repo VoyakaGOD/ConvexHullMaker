@@ -21,7 +21,7 @@ MainWindow::MainWindow(QString initialSavePath)
     infoLayout->addWidget(rewriteOptionCheckBox);
     infoLayout->addWidget(saveButton);
 
-    builder = new ConvexHullBuilder();
+    builder = new ConvexHullBuilder(PointsAndHullStyle());
     builder->setMinimumSize(700, 500);
     auto verticalLayout = new QVBoxLayout(this);
     verticalLayout->addWidget(builder);
