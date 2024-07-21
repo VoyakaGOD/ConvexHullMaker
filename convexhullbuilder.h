@@ -4,25 +4,26 @@
 #include <QMouseEvent>
 #include <QFrame>
 #include <QPainter>
-#include <Qlist>
+#include <QVector>
 #include <math.h>
 #include "pointsandhullstyle.h"
+#include "convexpolygon.h"
 
 class ConvexHullBuilder : public QFrame
 {
     Q_OBJECT
 
 private:
-    QList<QPoint> points;
-    QList<QPoint> hull;
+    QVector<QPoint> points;
+    ConvexPolygon hull;
     PointsAndHullStyle style;
-
-    void updateHull();
 
 public:
     ConvexHullBuilder(const PointsAndHullStyle &style);
-    const QList<QPoint> &getPoints() const;
-    const QList<QPoint> &getHull() const;
+    const QVector<QPoint> &getPoints() const;
+    const QVector<QPoint> &getHull() const;
+    void addPointToHull(QPoint point);
+    void removePointFromHull(int index);
     void clear();
 
 protected:

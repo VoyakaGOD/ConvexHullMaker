@@ -49,7 +49,7 @@ void MainWindow::onSaveRequested()
     if(rewriteOptionCheckBox->checkState() != Qt::CheckState::Checked)
         path = FileUtils::getVacantName(path);
 
-    if(!FileUtils::createSVG(builder->getPoints(), builder->getPoints(), path, style))
+    if(!FileUtils::createSVG(builder->getPoints(), builder->getHull(), path, style))
         log->setMessage("Can't save file with name [" + path +"]!");
     else
         log->setMessage("File saved with name [" + path + "]");

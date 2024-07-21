@@ -4,7 +4,7 @@
 #include <QFile>
 #include <QDir>
 #include <QTextStream>
-#include <QList>
+#include <QVector>
 #include <QPoint>
 #include "pointsandhullstyle.h"
 
@@ -13,7 +13,7 @@ class FileUtils
 public:
     FileUtils() = delete;
 
-    static bool createSVG(const QList<QPoint> &points, const QList<QPoint> &hull, QString savePath, const PointsAndHullStyle &style);
+    static bool createSVG(const QVector<QPoint> &points, const QVector<QPoint> &hull, QString savePath, const PointsAndHullStyle &style);
     static QString getVacantName(QString name);
 };
 

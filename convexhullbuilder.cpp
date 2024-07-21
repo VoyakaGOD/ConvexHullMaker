@@ -1,20 +1,20 @@
 #include "convexhullbuilder.h"
 
-ConvexHullBuilder::ConvexHullBuilder(const PointsAndHullStyle &style) : style(style)
+ConvexHullBuilder::ConvexHullBuilder(const PointsAndHullStyle &style) : style(style), hull(QVector<QPoint>())
 {
     setFrameShape(QFrame::Shape::Panel);
     setFrameShadow(QFrame::Shadow::Raised);
     setLineWidth(2);
 }
 
-const QList<QPoint> &ConvexHullBuilder::getPoints() const
+const QVector<QPoint> &ConvexHullBuilder::getPoints() const
 {
     return points;
 }
 
-const QList<QPoint> &ConvexHullBuilder::getHull() const
+const QVector<QPoint> &ConvexHullBuilder::getHull() const
 {
-    return hull;
+    return hull.getPoints();
 }
 
 void ConvexHullBuilder::clear()
@@ -24,14 +24,29 @@ void ConvexHullBuilder::clear()
     update();
 }
 
-void ConvexHullBuilder::updateHull()
+void ConvexHullBuilder::addPointToHull(QPoint point)
 {
+    points.push_back(point);
+    hull.addPoint(point);
+    update();
+}
+
+void ConvexHullBuilder::removePointFromHull(int index)
+{
+    points.removeAt(index);
+    hull.removePoint(index);
     update();
 }
 
 void ConvexHullBuilder::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
+
+    const QVector<QPoint> &hullPoints = hull.getPoints();
+    painter.setPen(QPen(QBrush(style.hullLineColor), style.hullLineWidth));
+    painter.drawPolyline(hullPoints);
+    if(hullPoints.size() > 2)
+        painter.drawLine(hullPoints.first(), hullPoints.last());
 
     painter.setBrush(QBrush(style.pointColor));
     painter.setPen(QPen(QBrush(style.pointStrokeColor), style.pointStrokeWidth));
@@ -46,16 +61,14 @@ void ConvexHullBuilder::mousePressEvent(QMouseEvent *event)
     bool already_exists = false;
     for(int i = 0; i < points.size(); i++)
     {
-        if(QVector2D(event->pos() - points[i]).lengthSquared() <= style.pointSize*style.pointSize)
+        if(getSquaredDistance(event->pos(), points[i]) <= style.pointSize*style.pointSize)
         {
-            points.removeAt(i);
+            removePointFromHull(i);
             already_exists = true;
             break;
         }
     }
 
     if(!already_exists)
-        points.push_back(event->pos());
-
-    updateHull();
+        addPointToHull(event->pos());
 }

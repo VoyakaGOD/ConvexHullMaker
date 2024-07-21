@@ -1,6 +1,6 @@
 #include "fileutils.h"
 
-bool FileUtils::createSVG(const QList<QPoint> &points, const QList<QPoint> &hull, QString savePath, const PointsAndHullStyle &style)
+bool FileUtils::createSVG(const QVector<QPoint> &points, const QVector<QPoint> &hull, QString savePath, const PointsAndHullStyle &style)
 {
     if(points.empty() || hull.empty())
         return false;
