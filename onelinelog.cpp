@@ -4,7 +4,7 @@
 
 OneLineLog::OneLineLog() : msgId(0)
 {
-    setText("Thanks for using!!!");
+    setText("Thank you for choosing us!!!");
 }
 
 void OneLineLog::updateLog()
