@@ -6,6 +6,7 @@
 
 int getSquaredDistance(QPoint first, QPoint second);
 int getCrossProduct(QPoint origin, QPoint first, QPoint second);
+int getConvergentCrossProduct(QPoint finalPoint, QPoint firstOrigin, QPoint secondOrigin);
 
 class ConvexPolygon
 {
@@ -19,7 +20,7 @@ public:
     void removePoint(int index);
     int getLowerBoundIndexByAngleOf(QPoint point) const;
     bool contains(QPoint point) const;
-    QPoint findTheNearestPointTo(QPoint point) const;
+    QPoint findTheNearestPointTo(QPoint point, int *index = nullptr) const;
     const QVector<QPoint> &getPoints() const;
     void clear();
 };

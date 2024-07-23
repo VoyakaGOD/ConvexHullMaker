@@ -33,8 +33,10 @@ void ConvexHullBuilder::addPointToHull(QPoint point)
 
 void ConvexHullBuilder::removePointFromHull(int index)
 {
+    int hullPointIndex = hull.getPoints().indexOf(points[index]);
+    if(hullPointIndex > -1)
+        hull.removePoint(hullPointIndex);
     points.removeAt(index);
-    hull.removePoint(index);
     update();
 }
 
