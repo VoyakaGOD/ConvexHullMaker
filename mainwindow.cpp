@@ -29,6 +29,12 @@ MainWindow::MainWindow(QString initialSavePath, const PointsAndHullStyle &style)
     verticalLayout->addWidget(builder);
     verticalLayout->addLayout(pathLayout);
     verticalLayout->addLayout(infoLayout);
+
+    setFocus();
+    connect(new QShortcut(Qt::Key_X, this), &QShortcut::activated, builder, &ConvexHullBuilder::clear);
+    connect(new QShortcut(Qt::Key_P, this), &QShortcut::activated, this, &MainWindow::onFileDialogRequested);
+    connect(new QShortcut(Qt::Key_R, this), &QShortcut::activated, this, &MainWindow::changeRewriteOption);
+    connect(new QShortcut(Qt::CTRL + Qt::Key_S, this), &QShortcut::activated, this, &MainWindow::onSaveRequested);
 }
 
 void MainWindow::onFileDialogRequested()
@@ -46,7 +52,7 @@ void MainWindow::onFileDialogRequested()
 void MainWindow::onSaveRequested()
 {
     QString path = pathEditor->text();
-    if(rewriteOptionCheckBox->checkState() != Qt::CheckState::Checked)
+    if(!rewriteOptionCheckBox->isChecked())
         path = FileUtils::getVacantName(path);
 
     if(!FileUtils::createSVG(builder->getPoints(), builder->getHull(), path, style))
@@ -59,4 +65,9 @@ void MainWindow::onClearingRequested()
 {
     log->setMessage("All[" + QString::number(builder->getPoints().size()) +"] points removed!");
     builder->clear();
+}
+
+void MainWindow::changeRewriteOption()
+{
+    rewriteOptionCheckBox->setChecked(!rewriteOptionCheckBox->isChecked());
 }

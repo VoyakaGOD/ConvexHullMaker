@@ -6,6 +6,7 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QFileDialog>
+#include <QShortcut>
 #include "convexhullbuilder.h"
 #include "fileutils.h"
 #include "onelinelog.h"
@@ -28,6 +29,7 @@ private slots:
     void onFileDialogRequested();
     void onSaveRequested();
     void onClearingRequested();
+    void changeRewriteOption();
 };
 
 #endif // MAINWINDOW_H

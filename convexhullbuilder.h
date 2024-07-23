@@ -5,7 +5,6 @@
 #include <QFrame>
 #include <QPainter>
 #include <QVector>
-#include <math.h>
 #include "pointsandhullstyle.h"
 #include "convexpolygon.h"
 
