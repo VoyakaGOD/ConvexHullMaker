@@ -5,7 +5,7 @@ int getSquaredDistance(QPoint first, QPoint second)
     QPoint delta = second - first;
     return delta.x()*delta.x() + delta.y()*delta.y();
 }
-
+//f<-o->s
 int getCrossProduct(QPoint origin, QPoint first, QPoint second)
 {
     QPoint v1 = first - origin;
@@ -13,6 +13,7 @@ int getCrossProduct(QPoint origin, QPoint first, QPoint second)
     return v1.x()*v2.y() - v1.y()*v2.x();
 }
 
+//fo->fp<-so
 int getConvergentCrossProduct(QPoint finalPoint, QPoint firstOrigin, QPoint secondOrigin)
 {
     QPoint v1 = finalPoint - firstOrigin;
@@ -20,10 +21,16 @@ int getConvergentCrossProduct(QPoint finalPoint, QPoint firstOrigin, QPoint seco
     return v1.x()*v2.y() - v1.y()*v2.x();
 }
 
-ConvexPolygon::ConvexPolygon(const QVector<QPoint> &points) : points(points) {}
+ConvexPolygon::ConvexPolygon(const QVector<QPoint> &points)
+{
+    //todo: implement Graham scan
+    for(auto point : points)
+        addPoint(point);
+}
 
 void ConvexPolygon::addPoint(QPoint point)
 {
+    //creating first triangle
     if(points.size() < 3)
     {
         points.push_back(point);
@@ -34,29 +41,38 @@ void ConvexPolygon::addPoint(QPoint point)
         return;
     }
 
-    if(contains(point))
+    int segmentIndex = 0;
+    int position = getRelativePosition(point, &segmentIndex);
+    if(position >= 0)
+    {
+        if(position == 0)
+            points.insert(segmentIndex + 1, point);
         return;
-
-    int directIndex = 0;
-    findTheNearestPointTo(point, &directIndex);
-    int reverseIndex = directIndex;
-
-    while(getConvergentCrossProduct(points[(directIndex + 1) % points.size()], points[directIndex], point) > 0)
-        directIndex = (directIndex + 1) % points.size();
-    while(getConvergentCrossProduct(points[(reverseIndex + points.size() - 1) % points.size()], points[reverseIndex], point) < 0)
-        reverseIndex = (reverseIndex + points.size() - 1) % points.size();
-
-    if(reverseIndex > directIndex)
-    {
-        points.erase(points.cbegin() + reverseIndex + 1, points.cend());
-        points.erase(points.cbegin(), points.cbegin() + directIndex);
-        points.push_front(point);
     }
-    else
+
+    int indent = 0;
+    while((indent < points.size()) && !isSegmentVisibleFrom(point, indent))
+        indent++;
+
+    int directIndex = indent;
+    while((directIndex < points.size()) && isSegmentVisibleFrom(point, directIndex))
+        directIndex++;
+
+    //visible part not separated by zero index
+    if((indent > 0) || !isSegmentVisibleFrom(point, points.size() - 1))
     {
-        points.erase(points.cbegin() + reverseIndex + 1, points.cbegin() + directIndex);
-        points.insert(reverseIndex + 1, point);
+        points.erase(points.cbegin() + indent + 1, points.cbegin() + directIndex);
+        points.insert(indent + 1, point);
+        return;
     }
+
+    indent = directIndex;
+    while((indent < points.size()) && !isSegmentVisibleFrom(point, indent))
+        indent++;
+
+    points.erase(points.cbegin() + indent + 1, points.cend());
+    points.erase(points.cbegin(), points.cbegin() + directIndex);
+    points.push_front(point);
 }
 
 //todo
@@ -86,55 +102,36 @@ int ConvexPolygon::getLowerBoundIndexByAngleOf(QPoint point) const
     return low;
 }
 
-bool ConvexPolygon::contains(QPoint point) const
+//positive result means that interior of polygon contains point
+//zero means that point lying on border
+//negative means that point is out of poly
+int ConvexPolygon::getRelativePosition(QPoint point, int *segmentIndex) const
 {
     if(points.size() < 3)
-        return false;
+        return -1;
 
     int lowerBould = getLowerBoundIndexByAngleOf(point);
     if((lowerBould == 0) || (lowerBould == (points.size() - 1)))
-        return false;
+        return -1;
 
     QPoint prevPoint = points[lowerBould];
-    QPoint nextPoint = points[(lowerBould + 1) % points.size()];
+    QPoint nextPoint = points[lowerBould + 1];
 
-    return getCrossProduct(prevPoint, nextPoint, point) > 0;
+    int result = getCrossProduct(prevPoint, nextPoint, point);
+    if(result == 0)
+        *segmentIndex = lowerBould;
+    return result;
 }
 
-QPoint ConvexPolygon::findTheNearestPointTo(QPoint point, int *index) const
+bool ConvexPolygon::contains(QPoint point) const
 {
-    if(points.size() == 0)
-    {
-        if(index)
-            *index = -1;
-        return QPoint();
-    }
+    int unused = 0;
+    return getRelativePosition(point, &unused) > 0;
+}
 
-    if(points.size() == 1)
-    {
-        if(index)
-            *index = 0;
-        return points[0];
-    }
-
-    int polyIndex = 0;
-    QPoint result = points[0];
-    int minSquaredDistance = getSquaredDistance(point, result);
-    for(int i = 0; i < points.size(); i++)
-    {
-        QPoint polyPoint = points[i];
-        int squaredDistance = getSquaredDistance(polyPoint, point);
-        if(squaredDistance < minSquaredDistance)
-        {
-            minSquaredDistance = squaredDistance;
-            result = polyPoint;
-            polyIndex = i;
-        }
-    }
-
-    if(index)
-        *index = polyIndex;
-    return result;
+bool ConvexPolygon::isSegmentVisibleFrom(QPoint point, int segmentIndex) const
+{
+    return getConvergentCrossProduct(points[(segmentIndex + 1) % points.size()], points[segmentIndex], point) > 0;
 }
 
 const QVector<QPoint> &ConvexPolygon::getPoints() const

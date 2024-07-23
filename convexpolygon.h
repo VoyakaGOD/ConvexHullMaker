@@ -15,12 +15,13 @@ private:
     QVector<QPoint> points;
 
 public:
-    ConvexPolygon(const QVector<QPoint> &points);
+    ConvexPolygon(const QVector<QPoint> &points = QVector<QPoint>());
     void addPoint(QPoint point);
     void removePoint(int index);
     int getLowerBoundIndexByAngleOf(QPoint point) const;
+    int getRelativePosition(QPoint point, int *segmentIndex) const;
     bool contains(QPoint point) const;
-    QPoint findTheNearestPointTo(QPoint point, int *index = nullptr) const;
+    bool isSegmentVisibleFrom(QPoint point, int segmentIndex) const;
     const QVector<QPoint> &getPoints() const;
     void clear();
 };
