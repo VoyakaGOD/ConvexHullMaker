@@ -25,6 +25,7 @@ MainWindow::MainWindow(QString initialSavePath, const PointsAndHullStyle &style,
 
     builder = new ConvexHullBuilder(style, initialPoints);
     builder->setMinimumSize(700, 500);
+    builder->setHistoryPointer(&history);
     auto verticalLayout = new QVBoxLayout(this);
     verticalLayout->addWidget(builder);
     verticalLayout->addLayout(pathLayout);

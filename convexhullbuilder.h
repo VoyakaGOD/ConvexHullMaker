@@ -17,14 +17,16 @@ private:
     QVector<QPoint> points;
     ConvexPolygon hull;
     PointsAndHullStyle style;
+    ActionHistory *history;
 
 public:
     ConvexHullBuilder(const PointsAndHullStyle &style, const QVector<QPoint> &points = QVector<QPoint>());
+    void setHistoryPointer(ActionHistory *history);
     const QVector<QPoint> &getPoints() const;
     const QVector<QPoint> &getHull() const;
-    void addPoint(QPoint point, ActionHistory *history = nullptr);
-    void removePoint(int index, ActionHistory *history = nullptr);
-    void clear(ActionHistory *history = nullptr);
+    void addPoint(QPoint point, bool __keep = true);
+    void removePoint(int index, bool __keep = true);
+    void clear(bool __keep = true);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
