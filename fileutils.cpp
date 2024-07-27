@@ -20,7 +20,9 @@ bool FileUtils::createSVG(const QVector<QPoint> &points, const QVector<QPoint> &
            "    width=\"100%\"\n"
            "    height=\"100%\">\n\n";
 
-    out << "    <path fill=\"none\" stroke=\"" << style.hullLineColor.name() << "\" stroke-width=\"" << style.hullLineWidth << "\"\n"
+    out << "    <path fill=\"none\" stroke=\"" << style.hullLineColor.name()
+        << "\" stroke-opacity=\"" << style.hullLineColor.alpha() / 256.0f
+        << "\" stroke-width=\"" << style.hullLineWidth << "\"\n"
            "        d=\"";
 
     auto it = hull.begin();
@@ -32,7 +34,9 @@ bool FileUtils::createSVG(const QVector<QPoint> &points, const QVector<QPoint> &
 
     out << "        Z\" />\n\n";
 
-    out << "    <g stroke=\"" << style.pointStrokeColor.name() << "\" stroke-width=\""
+    out << "    <g fill-opacity=\"" << style.pointColor.alpha() / 256.0f
+        << "\" stroke-opacity=\"" << style.pointStrokeColor.alpha() / 256.0f
+        << "\" stroke=\"" << style.pointStrokeColor.name() << "\" stroke-width=\""
         << style.pointStrokeWidth << "\" fill=\"" << style.pointColor.name() << "\">\n";
 
     for(auto point : points)
