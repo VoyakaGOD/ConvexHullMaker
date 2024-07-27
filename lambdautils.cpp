@@ -1,3 +1,3 @@
 #include "lambdautils.h"
 
-void Action::operator()() {}
+void Action::call() {}

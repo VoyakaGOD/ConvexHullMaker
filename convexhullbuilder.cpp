@@ -18,21 +18,31 @@ const QVector<QPoint> &ConvexHullBuilder::getHull() const
     return hull.getPoints();
 }
 
-void ConvexHullBuilder::clear()
+void ConvexHullBuilder::clear(ActionHistory *history)
 {
     points.clear();
     hull.clear();
     update();
 }
 
-void ConvexHullBuilder::addPointToHull(QPoint point)
+void ConvexHullBuilder::addPoint(QPoint point, ActionHistory *history)
 {
+    if(history)
+    {
+        int index = points.size();
+        ReversibleAction action("",
+                                new LambdaAction([this, point](){ addPoint(point);}),
+                                "",
+                                new LambdaAction([this, index](){ removePoint(index);}));
+        history->addRecord(action);
+    }
+
     points.push_back(point);
     hull.addPoint(point);
     update();
 }
 
-void ConvexHullBuilder::removePointFromHull(int index)
+void ConvexHullBuilder::removePoint(int index, ActionHistory *history)
 {
     int hullPointIndex = hull.getPoints().indexOf(points[index]);
     if(hullPointIndex > -1)
@@ -66,12 +76,12 @@ void ConvexHullBuilder::mousePressEvent(QMouseEvent *event)
     {
         if(getSquaredDistance(event->pos(), points[i]) <= style.pointSize*style.pointSize)
         {
-            removePointFromHull(i);
+            removePoint(i);
             already_exists = true;
             break;
         }
     }
 
     if(!already_exists)
-        addPointToHull(event->pos());
+        addPoint(event->pos());
 }

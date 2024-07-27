@@ -31,10 +31,18 @@ MainWindow::MainWindow(QString initialSavePath, const PointsAndHullStyle &style,
     verticalLayout->addLayout(infoLayout);
 
     setFocus();
-    connect(new QShortcut(Qt::Key_X, this), &QShortcut::activated, builder, &ConvexHullBuilder::clear);
+    connect(new QShortcut(Qt::Key_X, this), &QShortcut::activated, this, &MainWindow::onClearingRequested);
     connect(new QShortcut(Qt::Key_P, this), &QShortcut::activated, this, &MainWindow::onFileDialogRequested);
     connect(new QShortcut(Qt::Key_R, this), &QShortcut::activated, this, &MainWindow::changeRewriteOption);
     connect(new QShortcut(Qt::CTRL | Qt::Key_S, this), &QShortcut::activated, this, &MainWindow::onSaveRequested);
+    connect(new QShortcut(Qt::CTRL | Qt::Key_Z, this), &QShortcut::activated, this, &MainWindow::onUndo);
+    connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_Z, this), &QShortcut::activated, this, &MainWindow::onRedo);
+    connect(new QShortcut(Qt::CTRL | Qt::Key_Y, this), &QShortcut::activated, this, &MainWindow::onRedo);
+}
+
+void MainWindow::setHistoryCapacity(int capacity)
+{
+    history.setCapacity(capacity);
 }
 
 void MainWindow::onFileDialogRequested()
@@ -63,11 +71,29 @@ void MainWindow::onSaveRequested()
 
 void MainWindow::onClearingRequested()
 {
-    log->setMessage("All[" + QString::number(builder->getPoints().size()) +"] points removed!");
+    log->setMessage("All[" + QString::number(builder->getPoints().size()) +"] points have been removed!");
     builder->clear();
 }
 
 void MainWindow::changeRewriteOption()
 {
     rewriteOptionCheckBox->setChecked(!rewriteOptionCheckBox->isChecked());
+}
+
+void MainWindow::onUndo()
+{
+    QString message = history.undo();
+    if(message.isEmpty())
+        return;
+
+    log->setMessage(message);
+}
+
+void MainWindow::onRedo()
+{
+    QString message = history.redo();
+    if(message.isEmpty())
+        return;
+
+    log->setMessage(message);
 }

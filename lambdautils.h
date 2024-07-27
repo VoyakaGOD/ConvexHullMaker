@@ -5,7 +5,8 @@
 
 class Action
 {
-    virtual void operator()();
+public:
+    virtual void call();
 };
 
 template <typename T>
@@ -16,7 +17,7 @@ private:
 
 public:
     explicit LambdaAction(T lambda) : lambda(lambda) {}
-    void operator()() override { lambda(); }
+    void call() override { lambda(); }
 };
 
 using ActionPtr = QSharedPointer<Action>;

@@ -26,7 +26,11 @@ int main(int argc, char *argv[])
     while((rnd--) > 0)
         randomPoints << getPointInRect(QRect(3, 3, 694, 494));
 
+    int historyCapacity = parser.getInteger("undo", 100, IntMinPredicate(0));
+
     MainWindow window(QFileInfo(argv[0]).absolutePath() + "/_.svg", style, randomPoints);
+    window.setHistoryCapacity(historyCapacity);
     window.show();
+
     return a.exec();
 }
