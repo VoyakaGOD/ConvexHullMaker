@@ -4,6 +4,8 @@ ConvexHullMaker is little program to create convex hulls.
 
 It tries to effectively solve the dynamic convex hull problem.
 
+![appIcon](appIcon.png)
+
 WARNING: Lining up the hull results in undefined behavior!
 
 # Algorithms

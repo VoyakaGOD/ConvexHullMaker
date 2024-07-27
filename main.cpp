@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     int one = 1;
     char *nameOnly[] = { argv[0] };
     QApplication a(one, nameOnly);
+    a.setWindowIcon(QIcon(":/icons/appIcon.png"));
 
     CommandLineParser parser(argc, argv);
 

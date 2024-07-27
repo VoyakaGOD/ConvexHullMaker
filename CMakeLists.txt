@@ -33,6 +33,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         commandlineparser.h commandlineparser.cpp
         intpredicate.h intpredicate.cpp
         randompoint.h randompoint.cpp
+        actionstack.h actionstack.cpp
+        icons.qrc
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ConvexHullMaker APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
