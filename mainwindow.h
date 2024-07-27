@@ -23,7 +23,9 @@ private:
     PointsAndHullStyle style;
 
 public:
-    MainWindow(QString initialSavePath, const PointsAndHullStyle &style = PointsAndHullStyle());
+    MainWindow(QString initialSavePath,
+               const PointsAndHullStyle &style = PointsAndHullStyle(),
+               const QVector<QPoint> &initialPoints = QVector<QPoint>());
 
 private slots:
     void onFileDialogRequested();

@@ -1,6 +1,7 @@
 #include "convexhullbuilder.h"
 
-ConvexHullBuilder::ConvexHullBuilder(const PointsAndHullStyle &style) : style(style), hull(QVector<QPoint>())
+ConvexHullBuilder::ConvexHullBuilder(const PointsAndHullStyle &style, const QVector<QPoint> &points) :
+    style(style), points(points), hull(points)
 {
     setFrameShape(QFrame::Shape::Panel);
     setFrameShadow(QFrame::Shadow::Raised);

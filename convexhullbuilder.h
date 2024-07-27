@@ -18,7 +18,7 @@ private:
     PointsAndHullStyle style;
 
 public:
-    ConvexHullBuilder(const PointsAndHullStyle &style);
+    ConvexHullBuilder(const PointsAndHullStyle &style, const QVector<QPoint> &points = QVector<QPoint>());
     const QVector<QPoint> &getPoints() const;
     const QVector<QPoint> &getHull() const;
     void addPointToHull(QPoint point);
