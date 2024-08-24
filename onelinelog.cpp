@@ -4,7 +4,7 @@
 
 OneLineLog::OneLineLog() : msgId(0)
 {
-    msgText = "Thank you for choosing us!!!";
+    msgText = "Here will be information about the last your action.";
     updateLog();
 }
 

@@ -65,13 +65,17 @@ There are also several features to customize and simplify usage:
 
 When you run the application from the console, then you can change some of its parameters
 
-using this syntax this: `app.exe key1=value1 key2=value2 ... keyN=valueN`.
+using this syntax: `app.exe key1=value1 key2=value2 ... keyN=valueN`.
 
 Examples:
 
 `app.exe ps=13 rnd=1 pc=green`
 
 `app.exe pc=#55ff0033` - hex color in ARGB format
+
+`app.exe pc=#ff0033` - hex color in RGB format
+
+`app.exe pc=red` - name of required color
 
 | key | type | description |
 |-----|------|-------------|
