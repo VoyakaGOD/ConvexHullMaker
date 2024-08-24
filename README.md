@@ -1,5 +1,8 @@
 # General
 
+![QtVersion](https://img.shields.io/badge/Qt-12.0.2-green)
+![LGPL-3.0 license](https://img.shields.io/badge/license-LGPL--3.0-red)
+
 ConvexHullMaker is little program to create convex hulls.
 
 It tries to effectively solve the dynamic convex hull problem.
@@ -48,14 +51,51 @@ T(removePoint) = O(m), otherwise
 
 # Usage
 
-# Shortcuts
+You can add points by clicking the mouse or remove them by clicking again. 
+
+In this case, the convex hull will be constructed automatically. 
+
+Then the result can be saved to a file by pressing the [↓] button. 
+
+By default, the file name is changed after saving, but you can check the [rewrite] checkbox to avoid this behavior.
+
+There are also several features to customize and simplify usage:
+
+## Command line arguments
+
+When you run the application from the console, then you can change some of its parameters
+
+using this syntax this: `app.exe key1=value1 key2=value2 ... keyN=valueN`.
+
+Examples:
+
+`app.exe ps=13 rnd=1 pc=green`
+
+`app.exe pc=#55ff0033` - hex color in ARGB format
+
+| key | type | description |
+|-----|------|-------------|
+ps   | positive integer          | point visible radius
+pc   | color(hex or name)        | color of points
+psw  | positive integer          | width of points outline(stroke)
+psc  | color(hex or name)        | color of points outline(stroke)
+hlw  | positive integer          | width of hull lines
+hlc  | color(hex or name)        | color of hull lines
+rnd  | integer between 0 and 100 | number of random points
+undo | zero or positive integer  | maximum number of undo operations
+
+## Shortcuts
 
 | Keys  | Actions |
 |-------|---------|
-X | Clear scene
+X | clear scene
 R | check/unchek rewrite option
 P | open save file dialog
+G | *generate new random points
 Ctrl + S | save hull
 Ctrl + Z | undo
 Ctrl + Shift + Z | redo
 Ctrl + Y | also redo
+
+*It only works if you specified rnd property in command line arguments. 
+And it also remove all previous points.
