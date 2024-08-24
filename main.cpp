@@ -2,7 +2,6 @@
 
 #include <QApplication>
 #include "commandlineparser.h"
-#include "randompoint.h"
 
 int main(int argc, char *argv[])
 {
@@ -21,14 +20,10 @@ int main(int argc, char *argv[])
     style.hullLineWidth = parser.getInteger("hlw", style.hullLineWidth, IntAny());
     style.hullLineColor = parser.getColor("hlc", style.hullLineColor);
 
-    QVector<QPoint> randomPoints;
     int rnd = parser.getInteger("rnd", 0, IntClampPredicate(0, 100));
-    while((rnd--) > 0)
-        randomPoints << getPointInRect(QRect(3, 3, 694, 494));
-
     int historyCapacity = parser.getInteger("undo", 100, IntMinPredicate(0));
 
-    MainWindow window(QFileInfo(argv[0]).absolutePath() + "/_.svg", style, randomPoints);
+    MainWindow window(QFileInfo(argv[0]).absolutePath() + "/_.svg", style, rnd);
     window.setHistoryCapacity(historyCapacity);
     window.show();
 

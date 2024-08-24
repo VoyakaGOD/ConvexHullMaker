@@ -1,11 +1,14 @@
 #include "convexhullbuilder.h"
 
-ConvexHullBuilder::ConvexHullBuilder(const PointsAndHullStyle &style, const QVector<QPoint> &points) :
-    style(style), points(points), hull(points), history(nullptr)
+#define FRAME_WIDTH 2
+
+ConvexHullBuilder::ConvexHullBuilder(const PointsAndHullStyle &style, int initialPointsCount) : style(style), history(nullptr)
 {
     setFrameShape(QFrame::Shape::Panel);
     setFrameShadow(QFrame::Shadow::Raised);
-    setLineWidth(2);
+    setLineWidth(FRAME_WIDTH);
+
+    generateRandomPoints(initialPointsCount);
 }
 
 void ConvexHullBuilder::setHistoryPointer(ActionHistory *history)
@@ -73,6 +76,30 @@ void ConvexHullBuilder::removePoint(int index, bool __keep)
     if(hullPointIndex > -1)
         hull.removePoint(hullPointIndex);
     points.removeAt(index);
+    update();
+}
+
+void ConvexHullBuilder::generateRandomPoints(int count)
+{
+    QVector<QPoint> oldPoints;
+    if(history)
+        oldPoints = points;
+
+    points.clear();
+    while((count--) > 0)
+        points << getPointInRect(FRAME_WIDTH, FRAME_WIDTH, width() - FRAME_WIDTH, height() - FRAME_WIDTH);
+    hull = ConvexPolygon(points);
+
+    if(history)
+    {
+        QVector<QPoint> newPoints = points;
+        ReversibleAction action("New[" + QString::number(count) + "] points have been generated!",
+                                new LambdaAction([this, newPoints](){ clear(false); for(const auto &point : newPoints) addPoint(point, false); }),
+                                "Old[" + QString::number(points.size()) + "] points have been restored!",
+                                new LambdaAction([this, oldPoints](){ clear(false); for(const auto &point : oldPoints) addPoint(point, false); }));
+        history->addRecord(action);
+    }
+
     update();
 }
 

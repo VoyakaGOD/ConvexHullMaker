@@ -4,7 +4,7 @@
 
 OneLineLog::OneLineLog() : msgId(0)
 {
-    msgText = "Here will be information about the last your action.";
+    msgText = "Here will be information about your latest activities.";
     updateLog();
 }
 

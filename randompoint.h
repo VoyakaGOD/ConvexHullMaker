@@ -5,6 +5,6 @@
 #include <QRect>
 #include <QRandomGenerator>
 
-QPoint getPointInRect(const QRect &rect);
+QPoint getPointInRect(int minX, int minY, int maxX, int maxY);
 
 #endif // RANDOMPOINT_H

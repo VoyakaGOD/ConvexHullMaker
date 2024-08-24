@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 
-MainWindow::MainWindow(QString initialSavePath, const PointsAndHullStyle &style, const QVector<QPoint> &initialPoints) : style(style)
+MainWindow::MainWindow(QString initialSavePath, const PointsAndHullStyle &style, int rnd) : style(style), randomPointsCount(rnd)
 {
     QPushButton *fileDialogButton = new QPushButton("...");
     connect(fileDialogButton, &QPushButton::clicked, this, &MainWindow::onFileDialogRequested);
@@ -23,7 +23,7 @@ MainWindow::MainWindow(QString initialSavePath, const PointsAndHullStyle &style,
     infoLayout->addWidget(saveButton);
     infoLayout->addWidget(clearButton);
 
-    builder = new ConvexHullBuilder(style, initialPoints);
+    builder = new ConvexHullBuilder(style, randomPointsCount);
     builder->setMinimumSize(700, 500);
     builder->setHistoryPointer(&history);
     auto verticalLayout = new QVBoxLayout(this);
@@ -35,6 +35,7 @@ MainWindow::MainWindow(QString initialSavePath, const PointsAndHullStyle &style,
     connect(new QShortcut(Qt::Key_X, this), &QShortcut::activated, this, &MainWindow::onClearingRequested);
     connect(new QShortcut(Qt::Key_P, this), &QShortcut::activated, this, &MainWindow::onFileDialogRequested);
     connect(new QShortcut(Qt::Key_R, this), &QShortcut::activated, this, &MainWindow::changeRewriteOption);
+    connect(new QShortcut(Qt::Key_G, this), &QShortcut::activated, this, &MainWindow::onRandomPointsRequested);
     connect(new QShortcut(Qt::CTRL | Qt::Key_S, this), &QShortcut::activated, this, &MainWindow::onSaveRequested);
     connect(new QShortcut(Qt::CTRL | Qt::Key_Z, this), &QShortcut::activated, this, &MainWindow::onUndo);
     connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_Z, this), &QShortcut::activated, this, &MainWindow::onRedo);
@@ -97,4 +98,10 @@ void MainWindow::onRedo()
         return;
 
     log->setMessage(message);
+}
+
+void MainWindow::onRandomPointsRequested()
+{
+    log->setMessage("New[" + QString::number(randomPointsCount) + "] points have been generated!");
+    builder->generateRandomPoints(randomPointsCount);
 }

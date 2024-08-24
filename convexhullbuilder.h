@@ -8,6 +8,7 @@
 #include "pointsandhullstyle.h"
 #include "convexpolygon.h"
 #include "actionhistory.h"
+#include "randompoint.h"
 
 class ConvexHullBuilder : public QFrame
 {
@@ -20,13 +21,14 @@ private:
     ActionHistory *history;
 
 public:
-    ConvexHullBuilder(const PointsAndHullStyle &style, const QVector<QPoint> &points = QVector<QPoint>());
+    ConvexHullBuilder(const PointsAndHullStyle &style, int initialPointsCount);
     void setHistoryPointer(ActionHistory *history);
     const QVector<QPoint> &getPoints() const;
     const QVector<QPoint> &getHull() const;
     void addPoint(QPoint point, bool __keep = true);
     void removePoint(int index, bool __keep = true);
     void clear(bool __keep = true);
+    void generateRandomPoints(int count);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

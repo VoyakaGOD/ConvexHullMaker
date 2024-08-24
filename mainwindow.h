@@ -23,11 +23,10 @@ private:
     ConvexHullBuilder *builder;
     PointsAndHullStyle style;
     ActionHistory history;
+    int randomPointsCount;
 
 public:
-    MainWindow(QString initialSavePath,
-               const PointsAndHullStyle &style = PointsAndHullStyle(),
-               const QVector<QPoint> &initialPoints = QVector<QPoint>());
+    MainWindow(QString initialSavePath, const PointsAndHullStyle &style = PointsAndHullStyle(), int rnd = 0);
     void setHistoryCapacity(int capacity);
 
 private slots:
@@ -37,6 +36,7 @@ private slots:
     void changeRewriteOption();
     void onUndo();
     void onRedo();
+    void onRandomPointsRequested();
 };
 
 #endif // MAINWINDOW_H
