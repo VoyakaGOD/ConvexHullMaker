@@ -3,6 +3,7 @@
 
 #include <QVector>
 #include <QPoint>
+#include <algorithm>
 
 int getSquaredDistance(QPoint first, QPoint second);
 int getCrossProduct(QPoint origin, QPoint first, QPoint second);
@@ -15,9 +16,10 @@ private:
     QVector<QPoint> points;
 
 public:
-    ConvexPolygon(const QVector<QPoint> &points = QVector<QPoint>());
+    ConvexPolygon(QVector<QPoint> points = QVector<QPoint>());
     void addPoint(QPoint point);
     void removePoint(int index);
+    void attachToTheSide(int side, const ConvexPolygon &other);
     int getLowerBoundIndexByAngleOf(QPoint point) const;
     int getRelativePosition(QPoint point, int *segmentIndex) const;
     bool contains(QPoint point) const;

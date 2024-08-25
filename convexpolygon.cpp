@@ -21,11 +21,39 @@ int getConvergentCrossProduct(QPoint finalPoint, QPoint firstOrigin, QPoint seco
     return v1.x()*v2.y() - v1.y()*v2.x();
 }
 
-ConvexPolygon::ConvexPolygon(const QVector<QPoint> &points)
+//Graham scan
+ConvexPolygon::ConvexPolygon(QVector<QPoint> points)
 {
-    //todo: implement Graham scan
-    for(auto point : points)
-        addPoint(point);
+    if(points.size() <= 3)
+    {
+        for(auto point : points)
+            addPoint(point);
+        return;
+    }
+
+    int originIndex = 0;
+    for(int i = 1; i < points.size(); i++)
+    {
+        if((points[i].y() < points[originIndex].y()) ||
+            (points[i].y() == points[originIndex].y() && points[i].x() < points[originIndex].x()))
+        {
+            originIndex = i;
+        }
+    }
+
+    QPoint origin = points[originIndex];
+    std::swap(points[0], points[originIndex]);
+    std::sort(points.begin() + 1, points.end(), [origin](QPoint left, QPoint right){ return getCrossProduct(origin, left, right) > 0; });
+
+    this->points << points[0];
+    this->points << points[1];
+    this->points << points[2];
+    for (int i = 3; i < points.size(); i++)
+    {
+        while (this->points.size() > 1 && getCrossProduct(this->points.back(), this->points[this->points.size() - 2], points[i]) > 0)
+            this->points.pop_back();
+        this->points.push_back(points[i]);
+    }
 }
 
 void ConvexPolygon::addPoint(QPoint point)
@@ -75,10 +103,15 @@ void ConvexPolygon::addPoint(QPoint point)
     points.push_front(point);
 }
 
-//todo
 void ConvexPolygon::removePoint(int index)
 {
     points.removeAt(index);
+}
+
+//todo
+void attachToTheSide(int side, const ConvexPolygon &other)
+{
+
 }
 
 //zero means no lower bound
