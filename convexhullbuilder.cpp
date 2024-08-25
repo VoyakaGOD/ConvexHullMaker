@@ -31,10 +31,15 @@ void ConvexHullBuilder::clear(bool __keep)
     if(history && __keep)
     {
         QVector<QPoint> oldPoints = points;
+        ConvexPolygon oldHull = hull;
         ReversibleAction action("All[" + QString::number(points.size()) + "] points have been removed again!",
                                 new LambdaAction([this](){ clear(false); }),
                                 "All[" + QString::number(points.size()) + "] points have been restored!",
-                                new LambdaAction([this, oldPoints](){ for(const auto &point : oldPoints) addPoint(point, false); }));
+                                new LambdaAction([this, oldPoints, oldHull](){
+                                    points = oldPoints;
+                                    hull = oldHull;
+                                    update();
+                                }));
         history->addRecord(action);
     }
 
@@ -82,8 +87,12 @@ void ConvexHullBuilder::removePoint(int index, bool __keep)
 void ConvexHullBuilder::generateRandomPoints(int count)
 {
     QVector<QPoint> oldPoints;
+    ConvexPolygon oldHull;
     if(history)
+    {
         oldPoints = points;
+        oldHull = hull;
+    }
 
     points.clear();
     while((count--) > 0)
@@ -93,10 +102,19 @@ void ConvexHullBuilder::generateRandomPoints(int count)
     if(history)
     {
         QVector<QPoint> newPoints = points;
+        ConvexPolygon newHull = hull;
         ReversibleAction action("New[" + QString::number(count) + "] points have been generated!",
-                                new LambdaAction([this, newPoints](){ clear(false); for(const auto &point : newPoints) addPoint(point, false); }),
+                                new LambdaAction([this, newPoints, newHull](){
+                                    points = newPoints;
+                                    hull = newHull;
+                                    update();
+                                }),
                                 "Old[" + QString::number(points.size()) + "] points have been restored!",
-                                new LambdaAction([this, oldPoints](){ clear(false); for(const auto &point : oldPoints) addPoint(point, false); }));
+                                new LambdaAction([this, oldPoints, oldHull](){
+                                    points = oldPoints;
+                                    hull = oldHull;
+                                    update();
+                                }));
         history->addRecord(action);
     }
 
