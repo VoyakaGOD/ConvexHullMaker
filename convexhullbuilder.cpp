@@ -78,9 +78,23 @@ void ConvexHullBuilder::removePoint(int index, bool __keep)
     }
 
     int hullPointIndex = hull.getPoints().indexOf(points[index]);
-    if(hullPointIndex > -1)
-        hull.removePoint(hullPointIndex);
     points.removeAt(index);
+    if(hullPointIndex > -1)
+    {
+        const QVector<QPoint> &hullPoints = hull.getPoints();
+        int cnt = hullPoints.size();
+        QVector<QPoint> fragmentPoints;
+        for(auto point : points)
+            if(isPointInTriangle(hullPoints[(hullPointIndex + cnt - 1) % cnt],
+                                hullPoints[hullPointIndex],
+                                hullPoints[(hullPointIndex + 1) % cnt], point))
+                fragmentPoints << point;
+        ConvexPolygon fragment(fragmentPoints);
+
+        hull.removePoint(hullPointIndex);
+        hull.MergeWith(fragment);
+    }
+
     update();
 }
 

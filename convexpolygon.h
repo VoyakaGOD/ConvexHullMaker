@@ -8,6 +8,7 @@
 int getSquaredDistance(QPoint first, QPoint second);
 int getCrossProduct(QPoint origin, QPoint first, QPoint second);
 int getConvergentCrossProduct(QPoint finalPoint, QPoint firstOrigin, QPoint secondOrigin);
+bool isPointInTriangle(QPoint A, QPoint B, QPoint C, QPoint point);
 
 class ConvexPolygon
 {
@@ -19,7 +20,7 @@ public:
     ConvexPolygon(QVector<QPoint> points = QVector<QPoint>());
     void addPoint(QPoint point);
     void removePoint(int index);
-    void attachToTheSide(int side, const ConvexPolygon &other);
+    void MergeWith(const ConvexPolygon &other);
     int getLowerBoundIndexByAngleOf(QPoint point) const;
     int getRelativePosition(QPoint point, int *segmentIndex) const;
     bool contains(QPoint point) const;

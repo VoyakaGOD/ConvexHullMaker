@@ -5,6 +5,7 @@ int getSquaredDistance(QPoint first, QPoint second)
     QPoint delta = second - first;
     return delta.x()*delta.x() + delta.y()*delta.y();
 }
+
 //f<-o->s
 int getCrossProduct(QPoint origin, QPoint first, QPoint second)
 {
@@ -19,6 +20,15 @@ int getConvergentCrossProduct(QPoint finalPoint, QPoint firstOrigin, QPoint seco
     QPoint v1 = finalPoint - firstOrigin;
     QPoint v2 = finalPoint - secondOrigin;
     return v1.x()*v2.y() - v1.y()*v2.x();
+}
+
+//including interior only
+bool isPointInTriangle(QPoint A, QPoint B, QPoint C, QPoint point)
+{
+    long long orientation = getCrossProduct(A, B, C);
+    return (getCrossProduct(A, B, point) * orientation > 0) &&
+        (getCrossProduct(B, C, point) * orientation > 0) &&
+        (getCrossProduct(C, A, point) * orientation > 0);
 }
 
 //Graham scan
@@ -45,14 +55,38 @@ ConvexPolygon::ConvexPolygon(QVector<QPoint> points)
     std::swap(points[0], points[originIndex]);
     std::sort(points.begin() + 1, points.end(), [origin](QPoint left, QPoint right){ return getCrossProduct(origin, left, right) > 0; });
 
-    this->points << points[0];
-    this->points << points[1];
-    this->points << points[2];
-    for (int i = 3; i < points.size(); i++)
+    int i = 1;
+    QVector<QPoint> sparsePoints;
+    sparsePoints << origin;
+    while(points[i] == origin)
+        i++;
+    sparsePoints << points[i];
+    for(i++; i < points.size();)
     {
-        while (this->points.size() > 1 && getCrossProduct(this->points.back(), this->points[this->points.size() - 2], points[i]) > 0)
+        QPoint farthest = points[i];
+        int maxSquaredDistance = getSquaredDistance(origin, farthest);
+        i++;
+
+        while((i < points.size()) && (getCrossProduct(origin, points[i], farthest) == 0))
+        {
+            if(getSquaredDistance(origin, points[i]) > maxSquaredDistance)
+            {
+                farthest = points[i];
+                maxSquaredDistance = getSquaredDistance(origin, farthest);
+            }
+            i++;
+        }
+        sparsePoints << farthest;
+    }
+
+    this->points << sparsePoints[0];
+    this->points << sparsePoints[1];
+    this->points << sparsePoints[2];
+    for (int i = 3; i < sparsePoints.size(); i++)
+    {
+        while (this->points.size() > 1 && getCrossProduct(this->points.back(), this->points[this->points.size() - 2], sparsePoints[i]) > 0)
             this->points.pop_back();
-        this->points.push_back(points[i]);
+        this->points.push_back(sparsePoints[i]);
     }
 }
 
@@ -108,10 +142,113 @@ void ConvexPolygon::removePoint(int index)
     points.removeAt(index);
 }
 
-//todo
-void attachToTheSide(int side, const ConvexPolygon &other)
+//only for polygons with no intersections
+void ConvexPolygon::MergeWith(const ConvexPolygon &other)
 {
+    if(other.points.size() < 3)
+    {
+        for(auto point : other.points)
+            addPoint(point);
+        return;
+    }
 
+    if(points.size() < 3)
+    {
+        QVector<QPoint> oldPoints = std::move(points);
+        points = other.points;
+        for(auto point : oldPoints)
+            addPoint(point);
+        return;
+    }
+
+    int p1 = 0;
+    int p2 = 0;
+    while(!isSegmentVisibleFrom(other.points[p2], p1))
+        p1++;
+    while(!other.isSegmentVisibleFrom(points[p1], p2))
+        p2++;
+
+    // for(int i = 1; i < points.size(); i++)
+    //     if(points[i].x() > points[p1].x())
+    //         p1 = i;
+
+    // for(int i = 1; i < other.points.size(); i++)
+    //     if(other.points[i].x() < other.points[p2].x())
+    //         p2 = i;
+
+    int p3 = p1;
+    int p4 = p2;
+    int op1 = p1, op2 = p2;/////////////////
+
+    // auto p1p = points[p1];
+    // auto p2p = other.points[p2];
+    // points.clear();
+    // points << p1p << p2p;
+    // return;
+
+    int p2prev = (p2 + other.points.size() - 1) % other.points.size();
+    while(isSegmentVisibleFrom(other.points[p2], p1) || other.isSegmentVisibleFrom(points[p1], p2prev))
+    {
+        while(isSegmentVisibleFrom(other.points[p2], p1))
+            p1 = (p1 + 1) % points.size();
+        while(other.isSegmentVisibleFrom(points[p1], p2prev))
+        {
+            p2 = p2prev;
+            p2prev = (p2 + other.points.size() - 1) % other.points.size();
+        }
+    }
+
+    int p3prev = (p3 + points.size() - 1) % points.size();
+    while(isSegmentVisibleFrom(other.points[p4], p3prev) || other.isSegmentVisibleFrom(points[p3], p4))
+    {
+        while(isSegmentVisibleFrom(other.points[p4], p3prev))
+        {
+            p3 = p3prev;
+            p3prev = (p3 + points.size() - 1) % points.size();
+        }
+        while(other.isSegmentVisibleFrom(points[p3], p4))
+            p4 = (p4 + 1) % other.points.size();
+    }
+
+    // auto p1p = points[p1];
+    // auto p2p = other.points[p2];
+    // auto p3p = points[p3];
+    // auto p4p = other.points[p4];
+    // points.clear();
+    // points << p1p << p3p << p4p << p2p;
+    // return;
+
+    QVector<QPoint> oldPoints = std::move(points);
+    points.clear();
+
+    //points << QPoint(0, 0) << oldPoints[op1] << oldPoints[op1] + QPoint(0, 15) << QPoint(0, 0);
+    //points << other.points[p2] << other.points[p2] + QPoint(0, 30) << QPoint(0, 0);
+
+    if(p1 > p3)
+    {
+        for(int i = p1; i < oldPoints.size(); i++)
+            points << oldPoints[i];
+        for(int i = 0; i <= p3; i++)
+            points << oldPoints[i];
+    }
+    else
+    {
+        for(int i = p1; i <= p3; i++)
+            points << oldPoints[i];
+    }
+
+    if(p2 > p4)
+    {
+        for(int i = p4; i <= p2; i++)
+            points << other.points[i];
+    }
+    else
+    {
+        for(int i = p4; i < other.points.size(); i++)
+            points << other.points[i];
+        for(int i = 0; i <= p2; i++)
+            points << other.points[i];
+    }
 }
 
 //zero means no lower bound

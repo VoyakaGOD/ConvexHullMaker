@@ -31,9 +31,9 @@ T(addPoint) = O(log(m)), if interior of the hull containts point
 
 T(addPoint) = O(m), otherwise
 
-## II.  RemovePoint
+## II. RemovePoint
 
-1. Check whether the hull contains target point.
+1. Check whether the hull contains target point(p).
 
 2. If it's our case delete triangle (p-1), (p), (p+1).
 
