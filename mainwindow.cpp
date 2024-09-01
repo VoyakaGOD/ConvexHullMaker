@@ -102,6 +102,6 @@ void MainWindow::onRedo()
 
 void MainWindow::onRandomPointsRequested()
 {
-    log->setMessage("New[" + QString::number(randomPointsCount) + "] points have been generated!");
-    builder->generateRandomPoints(randomPointsCount);
+    int result = builder->generateRandomPoints(randomPointsCount);
+    log->setMessage("New[" + QString::number(result) + "] points have been generated!");
 }

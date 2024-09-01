@@ -28,7 +28,7 @@ public:
     void addPoint(QPoint point, bool __keep = true);
     void removePoint(int index, bool __keep = true);
     void clear(bool __keep = true);
-    void generateRandomPoints(int count);
+    int generateRandomPoints(int count);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

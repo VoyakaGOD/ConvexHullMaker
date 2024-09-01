@@ -98,7 +98,7 @@ void ConvexHullBuilder::removePoint(int index, bool __keep)
     update();
 }
 
-void ConvexHullBuilder::generateRandomPoints(int count)
+int ConvexHullBuilder::generateRandomPoints(int count)
 {
     QVector<QPoint> oldPoints;
     ConvexPolygon oldHull;
@@ -110,20 +110,24 @@ void ConvexHullBuilder::generateRandomPoints(int count)
 
     points.clear();
     while((count--) > 0)
-        points << getPointInRect(FRAME_WIDTH, FRAME_WIDTH, width() - FRAME_WIDTH, height() - FRAME_WIDTH);
+    {
+        QPoint newPoint = getPointInRect(FRAME_WIDTH, FRAME_WIDTH, width() - FRAME_WIDTH, height() - FRAME_WIDTH);
+        if(points.indexOf(newPoint) < 0)
+            points << newPoint;
+    }
     hull = ConvexPolygon(points);
 
     if(history)
     {
         QVector<QPoint> newPoints = points;
         ConvexPolygon newHull = hull;
-        ReversibleAction action("New[" + QString::number(count) + "] points have been generated!",
+        ReversibleAction action("New[" + QString::number(newPoints.size()) + "] points have been generated!",
                                 new LambdaAction([this, newPoints, newHull](){
                                     points = newPoints;
                                     hull = newHull;
                                     update();
                                 }),
-                                "Old[" + QString::number(points.size()) + "] points have been restored!",
+                                "Old[" + QString::number(oldPoints.size()) + "] points have been restored!",
                                 new LambdaAction([this, oldPoints, oldHull](){
                                     points = oldPoints;
                                     hull = oldHull;
@@ -133,6 +137,7 @@ void ConvexHullBuilder::generateRandomPoints(int count)
     }
 
     update();
+    return points.size();
 }
 
 void ConvexHullBuilder::paintEvent(QPaintEvent *event)
