@@ -1,7 +1,7 @@
 # General
 
 ![QtVersion](https://img.shields.io/badge/Qt-12.0.2-green)
-![LGPL-3.0 license](https://img.shields.io/badge/license-LGPL--3.0-red)
+![GPL-3.0 license](https://img.shields.io/badge/license-GPL--3.0-red)
 
 ConvexHullMaker is little program to create convex hulls.
 
